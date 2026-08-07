@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Proposal — Find Your Perfect Match</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e8dcc8;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ========== COLOR THEME (Black & Gold) ========== */
+        :root {
+            --gold: #d4a843;
+            --gold-dark: #b8922e;
+            --gold-light: #e8d08a;
+            --gold-glow: rgba(212, 168, 67, 0.4);
+            --gold-glow-strong: rgba(212, 168, 67, 0.6);
+            --bg-dark: #0a0a0a;
+            --bg-card: rgba(20, 18, 16, 0.85);
+            --bg-card-hover: rgba(30, 27, 24, 0.95);
+            --text-light: #e8dcc8;
+            --text-muted: #a89f94;
+            --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+            --shadow-hover: 0 12px 50px rgba(0, 0, 0, 0.8);
+            --border-color: rgba(212, 168, 67, 0.2);
+        }
+
+        /* ========== BACKGROUND VIDEO OVERLAY ========== */
+        .bg-video-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.55);
+            z-index: 1;
+        }
+
+        /* ========== SPARKLE ANIMATION ========== */
+        .sparkle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold-glow), 0 0 20px var(--gold-glow);
+            animation: sparkle-float linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes sparkle-float {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(1.2) rotate(720deg);
+            }
+        }
+
+        .sparkle:nth-child(1) { left: 5%; animation-duration: 18s; animation-delay: 0s; width: 5px; height: 5px; }
+        .sparkle:nth-child(2) { left: 15%; animation-duration: 22s; animation-delay: 3s; width: 3px; height: 3px; }
+        .sparkle:nth-child(3) { left: 25%; animation-duration: 16s; animation-delay: 5s; width: 6px; height: 6px; }
+        .sparkle:nth-child(4) { left: 35%; animation-duration: 20s; animation-delay: 1s; width: 4px; height: 4px; }
+        .sparkle:nth-child(5) { left: 45%; animation-duration: 24s; animation-delay: 7s; width: 5px; height: 5px; }
+        .sparkle:nth-child(6) { left: 55%; animation-duration: 19s; animation-delay: 2s; width: 3px; height: 3px; }
+        .sparkle:nth-child(7) { left: 65%; animation-duration: 21s; animation-delay: 4s; width: 7px; height: 7px; }
+        .sparkle:nth-child(8) { left: 75%; animation-duration: 17s; animation-delay: 6s; width: 4px; height: 4px; }
+        .sparkle:nth-child(9) { left: 85%; animation-duration: 23s; animation-delay: 8s; width: 5px; height: 5px; }
+        .sparkle:nth-child(10) { left: 95%; animation-duration: 20s; animation-delay: 0s; width: 3px; height: 3px; }
+        .sparkle:nth-child(11) { left: 10%; animation-duration: 25s; animation-delay: 9s; width: 6px; height: 6px; }
+        .sparkle:nth-child(12) { left: 50%; animation-duration: 18s; animation-delay: 11s; width: 4px; height: 4px; }
+        .sparkle:nth-child(13) { left: 30%; animation-duration: 22s; animation-delay: 13s; width: 5px; height: 5px; }
+        .sparkle:nth-child(14) { left: 70%; animation-duration: 19s; animation-delay: 15s; width: 3px; height: 3px; }
+        .sparkle:nth-child(15) { left: 90%; animation-duration: 21s; animation-delay: 17s; width: 6px; height: 6px; }
+
+        /* ========== SCROLL ANIMATIONS ========== */
+        .slide-left {
+            opacity: 0;
+            transform: translateX(-80px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide-right {
+            opacity: 0;
+            transform: translateX(80px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide-up {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide-left.visible,
+        .slide-right.visible,
+        .slide-up.visible {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 16px 0;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(212, 168, 67, 0.05);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
+        }
+
+        .logo img {
+            height: 70px;
+            width: auto;
+            filter: brightness(1.2) drop-shadow(0 0 20px rgba(212, 168, 67, 0.15));
+        }
+
+        .logo span {
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        /* Desktop Navigation - Hidden on mobile, visible on desktop */
+        .nav-links-desktop {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links-desktop a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 1rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links-desktop a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .nav-links-desktop a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links-desktop a:hover {
+            color: var(--gold);
+        }
+
+        /* Right side actions */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.05);
+        }
+
+        .btn-login:hover {
+            background: var(--gold);
+            color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+        }
+
+        .btn-signup {
+            background: var(--gold);
+            color: #0a0a0a;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
+        }
+
+        .btn-signup:hover {
+            background: var(--gold-dark);
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(212, 168, 67, 0.25);
+        }
+
+        /* Menu Toggle (|||) - Visible on both desktop and mobile */
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.8rem;
+            font-weight: 300;
+            cursor: pointer;
+            padding: 4px 8px;
+            letter-spacing: 2px;
+            transition: color 0.3s;
+        }
+
+        .menu-toggle:hover {
+            color: var(--gold);
+        }
+
+        /* ========== SIDE MENU ========== */
+        .side-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: none;
+        }
+
+        .side-menu-overlay.active {
+            display: block;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            max-width: 90%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 2001;
+            padding: 40px 30px;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.8);
+            overflow-y: auto;
+            border-left: 2px solid var(--border-color);
+        }
+
+        .side-menu.open {
+            right: 0;
+        }
+
+        .side-menu .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px;
+            transition: color 0.3s;
+        }
+
+        .side-menu .close-btn:hover {
+            color: var(--gold);
+        }
+
+        .side-menu .logo-sm {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 30px;
+            display: block;
+            text-shadow: 0 0 20px rgba(212, 168, 67, 0.1);
+        }
+
+        .side-menu .logo-sm span {
+            color: var(--text-light);
+        }
+
+        .side-menu .menu-item {
+            display: block;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: color 0.3s;
+        }
+
+        .side-menu .menu-item:hover {
+            color: var(--gold);
+        }
+
+        .side-menu .menu-divider {
+            border-top: 2px solid var(--gold);
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.1);
+        }
+
+        .side-menu .menu-cta {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            text-align: center;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 10px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .side-menu .menu-cta.login {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .side-menu .menu-cta.signup {
+            background: var(--gold);
+            color: #0a0a0a;
+            border: none;
+        }
+
+        .side-menu .menu-cta:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
+        }
+
+        /* ========== SLIDER / HERO (4 Slides) ========== */
+        .hero-slider {
+            position: relative;
+            height: 90vh;
+            min-height: 600px;
+            max-height: 900px;
+            overflow: hidden;
+            margin-top: 0;
+            border-radius: 0;
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.4);
+            z-index: 1;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        .slide-content h2 {
+            font-size: 4.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .slide-content h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 40px rgba(212, 168, 67, 0.3);
+        }
+
+        .slide-content p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            text-shadow: 0 1px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background: rgba(212, 168, 67, 0.15);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(212, 168, 67, 0.25);
+            color: #fff;
+            font-size: 1.8rem;
+            padding: 14px 18px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-btn:hover {
+            background: rgba(212, 168, 67, 0.3);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+        }
+
+        .slider-btn.prev {
+            left: 20px;
+        }
+        .slider-btn.next {
+            right: 20px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .slider-dots .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .slider-dots .dot.active {
+            background: var(--gold);
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.4);
+        }
+
+        /* ========== THREE CONNECTED CARDS ========== */
+        .three-cards {
+            padding: 80px 0 60px;
+            background: transparent;
+        }
+
+        .cards-connector {
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            gap: 0;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .card-connector-item {
+            flex: 1;
+            padding: 0;
+            text-align: center;
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 2px solid var(--border-color);
+            position: relative;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 380px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.03);
+        }
+
+        .card-connector-item .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .card-connector-item .card-content {
+            padding: 28px 24px 34px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-connector-item:first-child {
+            border-radius: 20px 0 0 20px;
+            border-right: none;
+        }
+
+        .card-connector-item:last-child {
+            border-radius: 0 20px 20px 0;
+            border-left: none;
+        }
+
+        .card-connector-item:nth-child(2) {
+            border-left: none;
+            border-right: none;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+            border-radius: 0;
+        }
+
+        .card-connector-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            width: 40px;
+            height: 2px;
+            background: var(--gold);
+            z-index: 2;
+            opacity: 0.3;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.1);
+        }
+
+        .card-connector-item:last-child::before {
+            display: none;
+        }
+
+        .card-connector-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .card-connector-item p {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            max-width: 260px;
+            margin: 0 auto 20px;
+        }
+
+        .card-connector-item .btn-view {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 10px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.05);
+        }
+
+        .card-connector-item .btn-view:hover {
+            background: var(--gold);
+            color: #0a0a0a;
+            box-shadow: 0 0 40px rgba(212, 168, 67, 0.2);
+        }
+
+        .card-connector-item.center-card {
+            background: var(--gold);
+            color: #0a0a0a;
+            border-color: var(--gold);
+            transform: scale(1.05);
+            z-index: 3;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 60px rgba(212, 168, 67, 0.2);
+        }
+
+        .card-connector-item.center-card h3,
+        .card-connector-item.center-card p {
+            color: #0a0a0a;
+        }
+
+        .card-connector-item.center-card .btn-view {
+            background: #0a0a0a;
+            color: var(--gold);
+            border-color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-connector-item.center-card .btn-view:hover {
+            background: transparent;
+            color: #0a0a0a;
+            border-color: #0a0a0a;
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+        }
+
+        .card-connector-item.center-card::before {
+            display: none;
+        }
+
+        .card-connector-item.center-card .card-image {
+            filter: brightness(0.95);
+        }
+
+        /* ========== HOW IT WORKS ========== */
+        .how-it-works {
+            padding: 80px 0 60px;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .how-it-works h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .how-it-works>p {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .step-item {
+            padding: 30px 20px;
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .step-item:hover {
+            transform: translateY(-6px);
+            border-color: var(--gold);
+            box-shadow: 0 0 40px rgba(212, 168, 67, 0.05);
+        }
+
+        .step-item .step-num {
+            display: inline-block;
+            background: var(--gold);
+            color: #0a0a0a;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            line-height: 50px;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.15);
+        }
+
+        .step-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-light);
+        }
+
+        .step-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* ========== WHY FAMILIES TRUST ========== */
+        .why-trust {
+            padding: 80px 0 60px;
+            background: transparent;
+        }
+
+        .why-trust h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .why-trust h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .why-trust>p {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .trust-grid .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            border: 2px solid var(--border-color);
+        }
+
+        .trust-grid .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .trust-features {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .trust-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .trust-feature-item:hover {
+            background: rgba(30, 27, 24, 0.9);
+            transform: translateX(6px);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.05);
+        }
+
+        .trust-feature-item .tf-icon {
+            font-size: 1.6rem;
+            min-width: 40px;
+            color: var(--gold);
+        }
+
+        .trust-feature-item .tf-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .trust-feature-item .tf-text p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========== HOW TO REGISTER ========== */
+        .how-register {
+            padding: 80px 0 60px;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .how-register h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .how-register h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .how-register>p {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+        }
+
+        .register-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .register-wrapper .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            border: 2px solid var(--border-color);
+        }
+
+        .register-wrapper .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .register-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .register-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .register-step:hover {
+            transform: translateX(6px);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.05);
+        }
+
+        .register-step .rs-num {
+            background: var(--gold);
+            color: #0a0a0a;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.15);
+        }
+
+        .register-step .rs-text h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .register-step .rs-text p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ========== REAL PEOPLE / TESTIMONIALS ========== */
+        .testimonials {
+            padding: 80px 0 60px;
+            background: transparent;
+        }
+
+        .testimonials h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .testimonials h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .testimonials>p {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 30px 24px;
+            border-radius: 20px;
+            border-left: 5px solid var(--gold);
+            transition: all 0.4s;
+            border: 1px solid var(--border-color);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 50px rgba(212, 168, 67, 0.05);
+            border-color: var(--gold);
+        }
+
+        .testimonial-card .quote {
+            font-style: italic;
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+
+        .testimonial-card .author {
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .testimonial-card .location {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .testimonial-card .stars {
+            color: var(--gold);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(212, 168, 67, 0.1);
+        }
+
+        /* ========== FINAL CTA BANNER ========== */
+        .final-cta {
+            padding: 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-top: 2px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .final-cta .cta-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.5);
+            z-index: 0;
+        }
+
+        .final-cta .container {
+            position: relative;
+            z-index: 1;
+            padding: 100px 24px;
+        }
+
+        .final-cta h2 {
+            font-size: 3.6rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .final-cta h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 50px rgba(212, 168, 67, 0.2);
+        }
+
+        .final-cta p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 32px;
+            font-size: 1.2rem;
+        }
+
+        .final-cta .btn-cta {
+            background: var(--gold);
+            color: #0a0a0a;
+            border: none;
+            padding: 18px 52px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 40px rgba(212, 168, 67, 0.2);
+        }
+
+        .final-cta .btn-cta:hover {
+            background: var(--gold-dark);
+            transform: scale(1.03);
+            box-shadow: 0 0 60px rgba(212, 168, 67, 0.3);
+        }
+
+        /* ========== CONTACT SECTION ========== */
+        .contact-section {
+            padding: 80px 0 60px;
+            background: transparent;
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+        }
+
+        .contact-section h2 span {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.1);
+        }
+
+        .contact-section>p {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin: 0 auto 40px;
+            font-size: 1.1rem;
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-info .ci-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(20, 18, 16, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .contact-info .ci-item:hover {
+            background: rgba(30, 27, 24, 0.9);
+            transform: translateX(4px);
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.05);
+        }
+
+        .contact-info .ci-item .ci-icon {
+            font-size: 1.4rem;
+            min-width: 40px;
+            color: var(--gold);
+        }
+
+        .contact-info .ci-item .ci-text h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .contact-info .ci-item .ci-text p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .contact-map {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            min-height: 400px;
+            background: rgba(20, 18, 16, 0.7);
+            border: 2px solid var(--border-color);
+        }
+
+        .contact-map iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 400px;
+            border: none;
+            filter: brightness(0.7) contrast(1.2);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            padding: 50px 0 20px;
+            background: rgba(10, 10, 10, 0.95);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-grid h5 {
+            font-size: 1rem;
+            margin-bottom: 14px;
+            color: var(--text-light);
+        }
+
+        .footer-grid ul {
+            list-style: none;
+        }
+
+        .footer-grid ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-grid ul a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            transition: color 0.3s;
+        }
+
+        .footer-grid ul a:hover {
+            color: var(--gold);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .footer-social a {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            transition: color 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+        }
+
+        /* ========== WHATSAPP FLOAT ========== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            background: #25d366;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(37, 211, 102, 0.4);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            /* Hide desktop navigation on mobile */
+            .nav-links-desktop {
+                display: none;
+            }
+
+            /* Hide Login & Sign Up buttons on mobile */
+            .nav-actions .btn-login,
+            .nav-actions .btn-signup {
+                display: none;
+            }
+
+            .cards-connector {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .card-connector-item {
+                border-radius: 20px !important;
+                border: 2px solid var(--border-color) !important;
+                min-height: auto;
+            }
+
+            .card-connector-item::before {
+                display: none;
+            }
+
+            .card-connector-item.center-card {
+                transform: scale(1);
+                border-color: var(--gold) !important;
+            }
+
+            .card-connector-item .card-image {
+                height: 200px;
+            }
+
+            .trust-grid,
+            .register-wrapper,
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-slider {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .slide-content h2 {
+                font-size: 2.8rem;
+            }
+
+            .slider-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1.4rem;
+                padding: 10px;
+            }
+
+            .contact-map {
+                min-height: 300px;
+            }
+
+            .contact-map iframe {
+                min-height: 300px;
+            }
+
+            .side-menu {
+                width: 320px;
+            }
+
+            .final-cta {
+                min-height: 400px;
+            }
+
+            .final-cta h2 {
+                font-size: 2.8rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+            .logo img {
+                height: 55px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-slider {
+                height: 50vh;
+                min-height: 350px;
+            }
+
+            .slide-content h2 {
+                font-size: 2rem;
+            }
+            .slide-content p {
+                font-size: 1rem;
+            }
+
+            .slider-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+                padding: 6px;
+            }
+            .slider-btn.prev {
+                left: 8px;
+            }
+            .slider-btn.next {
+                right: 8px;
+            }
+
+            .card-connector-item .card-image {
+                height: 160px;
+            }
+            .card-connector-item .card-content {
+                padding: 20px 16px 24px;
+            }
+            .card-connector-item h3 {
+                font-size: 1.2rem;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .final-cta h2 {
+                font-size: 2rem;
+            }
+
+            .final-cta p {
+                font-size: 1rem;
+            }
+            .final-cta {
+                min-height: 350px;
+            }
+            .final-cta .container {
+                padding: 60px 16px;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+            .logo img {
+                height: 45px;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 1.8rem;
+                bottom: 16px;
+                right: 16px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .contact-info .ci-item {
+                padding: 12px 16px;
+            }
+
+            .side-menu {
+                width: 100%;
+                max-width: 100%;
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== SPARKLE ANIMATION ========== -->
+    <div class="sparkle-container">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+    </div>
+
+    <!-- ========== BACKGROUND VIDEO (Fixed behind everything) ========== -->
+    <div class="bg-video-wrapper">
+        <video autoplay muted loop playsinline>
+            <source src="video/16415910_1920_1080_60fps.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <div class="bg-overlay"></div>
+    </div>
+
+    <!-- ========== HEADER ========== -->
+    <header>
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo">
+                    <img src="pictures/logo.png" alt="Select Proposal Logo" />
+                    Select<span>Proposal</span>
+                </a>
+
+                <!-- Desktop Navigation - Visible on desktop only -->
+                <ul class="nav-links-desktop">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+
+                <div class="nav-actions">
+                    <!-- Login & Sign Up - Visible on desktop only -->
+                    <button class="btn-login">Log In</button>
+                    <button class="btn-signup">Sign Up</button>
+                    <!-- Menu Toggle (|||) - Visible on both desktop and mobile -->
+                    <button class="menu-toggle" id="menuToggle">|||</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== SIDE MENU ========== -->
+    <div class="side-menu-overlay" id="sideMenuOverlay"></div>
+    <div class="side-menu" id="sideMenu">
+        <button class="close-btn" id="closeSideMenu">✕</button>
+        <div class="logo-sm">Select<span>Proposal</span></div>
+
+        <a href="#" class="menu-item">Home</a>
+        <a href="#" class="menu-item">About Us</a>
+        <a href="#" class="menu-item">Services</a>
+        <a href="#" class="menu-item">Browse Matches</a>
+        <a href="#" class="menu-item">Compatibility Test</a>
+        <a href="#" class="menu-item">Pricing Plans</a>
+        <a href="#" class="menu-item">Success Stories</a>
+        <a href="#contact" class="menu-item">Contact Us</a>
+
+        <div class="menu-divider"></div>
+
+        <a href="#" class="menu-cta login">Log In</a>
+        <a href="#" class="menu-cta signup">Sign Up Free</a>
+    </div>
+
+    <!-- ========== SLIDER / HERO (4 Slides) ========== -->
+    <section class="hero-slider" id="heroSlider">
+        <div class="slider-track" id="sliderTrack">
+            <!-- Slide 1 -->
+            <div class="slide" style="background-image: url('pictures/proposal2.jpg');">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h2>Find Your <span>Perfect Match</span></h2>
+                    <p>Thousands of verified profiles. Trusted by Pakistani families worldwide.</p>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="slide" style="background-image: url('pictures/logo.png');">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h2>Serious <span>Proposals Only</span></h2>
+                    <p>Every profile manually verified. No casual dating. Just meaningful connections.</p>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="slide" style="background-image: url('pictures/countries slider.png');">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h2>15+ <span>Countries Served</span></h2>
+                    <p>Connecting Pakistani families across the globe — from Lahore to London.</p>
+                </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="slide" style="background-image: url('pictures/journey to nikah.jpg');">
+                <div class="slide-overlay"></div>
+                <div class="slide-content">
+                    <h2>Your Journey <span>to Nikkah</span></h2>
+                    <p>From signup to marriage — a clear, honest process with no hidden steps.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="slider-btn prev" id="prevBtn">‹</button>
+        <button class="slider-btn next" id="nextBtn">›</button>
+
+        <div class="slider-dots" id="sliderDots">
+            <button class="dot active" data-index="0"></button>
+            <button class="dot" data-index="1"></button>
+            <button class="dot" data-index="2"></button>
+            <button class="dot" data-index="3"></button>
+        </div>
+    </section>
+
+    <!-- ========== THREE CONNECTED CARDS ========== -->
+    <section class="three-cards">
+        <div class="container">
+            <div class="cards-connector">
+                <div class="card-connector-item slide-left" id="cardLeft">
+                    <img src="pictures/groom.jpg" alt="Find Groom" class="card-image" />
+                    <div class="card-content">
+                        <h3>Find the Perfect Groom</h3>
+                        <p>Browse verified grooms with detailed career, culture & family profiles.</p>
+                        <button class="btn-view">View More →</button>
+                    </div>
+                </div>
+
+                <div class="card-connector-item center-card slide-up" id="cardCenter">
+                    <img src="pictures/proposal.jpg" alt="Add Proposal" class="card-image" />
+                    <div class="card-content">
+                        <h3>Add Your Proposal</h3>
+                        <p>Create your profile and let families find you. Start your journey today.</p>
+                        <button class="btn-view">Get Started →</button>
+                    </div>
+                </div>
+
+                <div class="card-connector-item slide-right" id="cardRight">
+                    <img src="pictures/bride.jpg" alt="Find Bride" class="card-image" />
+                    <div class="card-content">
+                        <h3>Find the Perfect Bride</h3>
+                        <p>Explore verified brides with compatibility scores and family values.</p>
+                        <button class="btn-view">View More →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS ========== -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="slide-up">How <span>Select Proposal</span> Works</h2>
+            <p class="slide-up">From signup to Nikkah — a clear, honest process with no hidden steps.</p>
+
+            <div class="steps-grid">
+                <div class="step-item slide-up">
+                    <div class="step-num">1</div>
+                    <h4>Create Your Profile</h4>
+                    <p>Sign up for free. Add your education, profession, family details, and what you're looking for.</p>
+                </div>
+                <div class="step-item slide-up">
+                    <div class="step-num">2</div>
+                    <h4>Get Verified</h4>
+                    <p>Our team manually reviews every profile to ensure it's genuine before it goes live.</p>
+                </div>
+                <div class="step-item slide-up">
+                    <div class="step-num">3</div>
+                    <h4>Browse Matches</h4>
+                    <p>Search verified profiles with filters — city, education, profession, age, and more.</p>
+                </div>
+                <div class="step-item slide-up">
+                    <div class="step-num">4</div>
+                    <h4>View & Connect</h4>
+                    <p>Upgrade to view contact details. Reach out via WhatsApp or phone — no middleman.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== WHY FAMILIES TRUST ========== -->
+    <section class="why-trust">
+        <div class="container">
+            <h2 class="slide-up">Why Families <span>Trust</span> Select Proposal</h2>
+            <p class="slide-up">A quick look at how we help families find the right rishta</p>
+
+            <div class="trust-grid">
+                <div class="video-wrapper slide-left">
+                    <iframe
+                    src="https://www.youtube.com/embed/g6eehy1PtUs"
+                    title="Select Proposal Video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="trust-features slide-right">
+                <div class="trust-feature-item">
+                    <span class="tf-icon">✓</span>
+                    <div class="tf-text">
+                        <h4>100% Manually Verified</h4>
+                        <p>Every profile screened and phone-verified for authenticity.</p>
+                    </div>
+                </div>
+                <div class="trust-feature-item">
+                    <span class="tf-icon">👨‍👩‍👧‍👦</span>
+                    <div class="tf-text">
+                        <h4>Family-Focused Matching</h4>
+                        <p>Detailed cultural, religious, and lifestyle preferences.</p>
+                    </div>
+                </div>
+                <div class="trust-feature-item">
+                    <span class="tf-icon">🌍</span>
+                    <div class="tf-text">
+                        <h4>Global Reach</h4>
+                        <p>Active in 15+ countries with overseas Pakistani families.</p>
+                    </div>
+                </div>
+                <div class="trust-feature-item">
+                    <span class="tf-icon">🔒</span>
+                    <div class="tf-text">
+                        <h4>Privacy & Security</h4>
+                        <p>Your data is safe. Only serious, verified members can connect.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== HOW TO REGISTER ========== -->
+<section class="how-register">
+    <div class="container">
+        <h2 class="slide-up">How to <span>Register?</span></h2>
+        <p class="slide-up">Watch how to create your profile on Select Proposal</p>
+
+        <div class="register-wrapper">
+            <div class="register-steps slide-left">
+                <div class="register-step">
+                    <span class="rs-num">1</span>
+                    <div class="rs-text">
+                        <h4>Visit SelectProposal.com</h4>
+                        <p>Go to our website and click on "Sign Up Free".</p>
+                    </div>
+                </div>
+                <div class="register-step">
+                    <span class="rs-num">2</span>
+                    <div class="rs-text">
+                        <h4>Fill Your Details</h4>
+                        <p>Add your education, profession, family background, and preferences.</p>
+                    </div>
+                </div>
+                <div class="register-step">
+                    <span class="rs-num">3</span>
+                    <div class="rs-text">
+                        <h4>Get Verified</h4>
+                        <p>Our team will manually verify your profile within 24 hours.</p>
+                    </div>
+                </div>
+                <div class="register-step">
+                    <span class="rs-num">4</span>
+                    <div class="rs-text">
+                        <h4>Start Browsing</h4>
+                        <p>Once verified, start browsing matches and connect with families.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="video-wrapper slide-right">
+                <iframe
+                src="https://www.youtube.com/embed/qikFGfws7RY"
+                title="How to Register on Select Proposal"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ========== REAL PEOPLE / TESTIMONIALS ========== -->
+<section class="testimonials">
+    <div class="container">
+        <h2 class="slide-up">Real People. <span>Real Rishtas.</span></h2>
+        <p class="slide-up">Hear from families who found their perfect match through us</p>
+
+        <div class="testimonial-grid">
+            <div class="testimonial-card slide-left">
+                <div class="stars">★★★★★</div>
+                <p class="quote">"As a doctor working 12-hour shifts, I never had time for the traditional rishta process. My mother found Select Proposal and within weeks, we connected with Fatima's family. Alhamdulillah, we're now happily married."</p>
+                <div class="author">Ahmed &amp; Fatima</div>
+                <div class="location">Lahore → Lahore</div>
+            </div>
+
+            <div class="testimonial-card slide-up">
+                <div class="stars">★★★★★</div>
+                <p class="quote">"Being overseas, finding a genuine rishta back home felt impossible. Select Proposal's manual verification gave us confidence. When I saw Sana's verified profile, I knew this was different. 4 months later we had our Nikkah."</p>
+                <div class="author">Omar &amp; Sana</div>
+                <div class="location">Islamabad → London</div>
+            </div>
+
+            <div class="testimonial-card slide-right">
+                <div class="stars">★★★★★</div>
+                <p class="quote">"My parents were very particular about family background. Select Proposal's filters made it easy for my family to find matches that respected our preferences. Ali's profile stood out — educated, family-oriented, and now the best husband."</p>
+                <div class="author">Zainab &amp; Ali</div>
+                <div class="location">Karachi → Dubai</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FINAL CTA BANNER ========== -->
+<section class="final-cta" style="background-image: url('pictures/banner.png');">
+    <div class="cta-overlay"></div>
+    <div class="container">
+        <h2 class="slide-up">Ready to <span>Find Your Partner?</span></h2>
+        <p class="slide-up">Join Pakistani families who trust Select Proposal to find their perfect match. Verified profiles, direct WhatsApp contact, and complete privacy.</p>
+        <button class="btn-cta slide-up">Get Started Free →</button>
+    </div>
+</section>
+
+<!-- ========== CONTACT SECTION ========== -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <h2 class="slide-up">Get <span>In Touch</span></h2>
+        <p class="slide-up">We're here to help you find your perfect match</p>
+
+        <div class="contact-wrapper">
+            <div class="contact-info slide-left">
+                <div class="ci-item">
+                    <span class="ci-icon">📍</span>
+                    <div class="ci-text">
+                        <h4>Address</h4>
+                        <p>Shop #12, Lucky One Mall, Rashid Minhas Road, Karachi</p>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <span class="ci-icon">📞</span>
+                    <div class="ci-text">
+                        <h4>Phone</h4>
+                        <p>+92 321 555 7890</p>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <span class="ci-icon">💬</span>
+                    <div class="ci-text">
+                        <h4>WhatsApp</h4>
+                        <p>+92 300 777 4567</p>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <span class="ci-icon">✉️</span>
+                    <div class="ci-text">
+                        <h4>Email</h4>
+                        <p>hello@selectproposal.com</p>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <span class="ci-icon">🕐</span>
+                    <div class="ci-text">
+                        <h4>Working Hours</h4>
+                        <p>Mon-Sat 10:00 AM – 9:00 PM</p>
+                    </div>
+                </div>
+                <div class="ci-item">
+                    <span class="ci-icon">🌐</span>
+                    <div class="ci-text">
+                        <h4>Social Media</h4>
+                        <p>
+                            <a href="#" style="color:var(--gold);margin-right:10px;">Facebook</a>
+                            <a href="#" style="color:var(--gold);margin-right:10px;">Instagram</a>
+                            <a href="#" style="color:var(--gold);margin-right:10px;">TikTok</a>
+                            <a href="#" style="color:var(--gold);">WhatsApp</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-map slide-right">
+                <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28958.123456789!2d67.123456789!3d24.123456789!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDA3JzI2LjAiTiA2N8KwMDcnMjYuMCJF!5e0!3m2!1sen!2s!4v1234567890"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h5>Select Proposal</h5>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>For Members</h5>
+                <ul>
+                    <li><a href="#">Browse Matches</a></li>
+                    <li><a href="#">Compatibility Test</a></li>
+                    <li><a href="#">Pricing Plans</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Support</h5>
+                <ul>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Connect</h5>
+                <ul>
+                    <li><a href="#">WhatsApp Support</a></li>
+                    <li><a href="#">Email Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Select Proposal. All rights reserved. Made with ❤️ for Pakistani families.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ========== WHATSAPP FLOAT ========== -->
+<a href="https://wa.me/923000000000" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+    // ---------- SLIDER ----------
+    const track = document.getElementById('sliderTrack');
+    const slides = track.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+    let autoSlideInterval;
+
+    function goToSlide(index) {
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+        currentIndex = index;
+        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+    }
+
+    function nextSlide() { goToSlide(currentIndex + 1); }
+    function prevSlide() { goToSlide(currentIndex - 1); }
+
+    dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+            goToSlide(parseInt(dot.dataset.index));
+            resetAutoSlide();
+        });
+    });
+
+    prevBtn.addEventListener('click', () => { prevSlide();
+        resetAutoSlide(); });
+    nextBtn.addEventListener('click', () => { nextSlide();
+        resetAutoSlide(); });
+
+    function startAutoSlide() {
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+
+    function resetAutoSlide() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+
+    startAutoSlide();
+
+    const slider = document.getElementById('heroSlider');
+    slider.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    slider.addEventListener('mouseleave', startAutoSlide);
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    slider.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    slider.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) nextSlide();
+            else prevSlide();
+            resetAutoSlide();
+        }
+    });
+
+    // ---------- SCROLL ANIMATIONS ----------
+    const animatedElements = document.querySelectorAll('.slide-left, .slide-right, .slide-up');
+
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 80);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    animatedElements.forEach(el => observer.observe(el));
+
+    // ---------- HAMBURGER / SIDE MENU TOGGLE ----------
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('sideMenuOverlay');
+    const closeBtn = document.getElementById('closeSideMenu');
+
+    function openMenu() {
+        sideMenu.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        sideMenu.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    menuToggle.addEventListener('click', openMenu);
+    closeBtn.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+    });
+
+    // ---------- PLACEHOLDER IMAGES ----------
+    console.log('📸 Replace placeholder images:');
+    console.log('  - pictures/logo.png');
+    console.log('  - pictures/proposal2.jpg');
+    console.log('  - pictures/countries slider.png');
+    console.log('  - pictures/journey to nikah.jpg');
+    console.log('  - pictures/groom.jpg');
+    console.log('  - pictures/proposal.jpg');
+    console.log('  - pictures/bride.jpg');
+    console.log('  - pictures/banner.png');
+    console.log('🎥 YouTube embed URLs fixed:');
+    console.log('  - https://www.youtube.com/embed/g6eehy1PtUs');
+    console.log('  - https://www.youtube.com/embed/qikFGfws7RY');
+    console.log('📞 Update WhatsApp number in href');
+    console.log('📍 Update Google Maps embed URL');
+</script>
+
+</body>
+</html>
